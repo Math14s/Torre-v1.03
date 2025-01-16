@@ -20,8 +20,7 @@ class JogoIncremental:
         self.andar_atual = 1  # Andar atual, diferente do maior_andar
 
     def limpar_tela(self):
-        try: os.system('clear')  # Limpa a tela no Termux e Windows
-        except: os.system('cls')
+        os.system('cls' if os.name == 'nt' else 'clear')  # Limpa a tela no Termux e Windows
     def inventario(self):
         self.limpar_tela()
         print("==== INVENTARIO ====")
