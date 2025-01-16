@@ -8,7 +8,7 @@ class JogoIncremental:
         self.vida = 500
         self.forca = 100
         self.agilidade = 25
-        self.ouro = 10
+        self.ouro = 1000000
         self.pontos_disponiveis = 10
         self.arma_equipada = None
         self.bota_equipada = None
@@ -31,11 +31,8 @@ class JogoIncremental:
             print(f"Bota: {self.bota_equipada[0]} (multiplicador {self.bota_equipada[1]}x)")
         if self.colete_equipado:
             print(f"Colete: {self.colete_equipado[0]} (multiplicador {self.colete_equipado[1]}x)")
-        print("4. Voltar")
 
-        escolha = input("Escolha uma opção: ")
-        if escolha == "4":
-            return
+        input("...")
 
     def distribuir_status(self):
         self.limpar_tela()
@@ -139,6 +136,7 @@ class JogoIncremental:
             self.arma_equipada = ("Excalibur", 100)
         else:
             print("Ouro insuficiente ou opção inválida.")
+            time.sleep(2)
             return
 
         print(f"Arma equipada: {self.arma_equipada[0]} com multiplicador {self.arma_equipada[1]}x de força.")
@@ -186,6 +184,7 @@ class JogoIncremental:
              self.bota_equipada = ("Salto Alto Rosa", 777)
         else:
             print("Ouro insuficiente ou opção inválida.")
+            time.sleep(2)
             return
 
         print(f"Bota equipada: {self.bota_equipada[0]} com multiplicador {self.bota_equipada[1]}x de agilidade.")
@@ -194,27 +193,44 @@ class JogoIncremental:
     def loja_coletes(self):
         self.limpar_tela()
         print("==== LOJA DE COLETES ====")
-        print("1. 100 Ouro - Colete Kevlar (3x Vida)")
-        print("2. 300 Ouro - Colete Anti tanque (6x Vida)")
-        print("3. 800 Ouro - Colete de Vibranium (20x Vida)")
-        print("4. Voltar")
+        print("1. 100 Ouro - Colete Padrão (3x Vida)")
+        print("2. 300 Ouro - Colete Kevlar (6x Vida)")
+        print("3. 800 Ouro - Colete Anti-Tanque (20x Vida)")
+        print("4. 1500 Ouro - Colete Adamantium (70x Vida)")
+        print("5. 3000 Ouro - Colete Vibranium (150x vida)")
+        print("6. 6666 Ouro - Colete Infernal (666x Vida)")
+        print("7. 7777 Ouro - Colete Divino (1000x Vida)")
+        print("8. Voltar")
 
         escolha = input("Escolha uma opção: ")
 
-        if escolha == "4":
+        if escolha == "8":
             return
 
         if escolha == "1" and self.ouro >= 100:
             self.ouro -= 100
-            self.colete_equipado = ("Colete Kevlar", 3)
+            self.colete_equipado = ("Colete Padrão", 3)
         elif escolha == "2" and self.ouro >= 300:
             self.ouro -= 300
-            self.colete_equipado = ("Colete Anti tanque", 6)
+            self.colete_equipado = ("Colete Kevlar", 6)
         elif escolha == "3" and self.ouro >= 800:
             self.ouro -= 800
-            self.colete_equipado = ("Colete de Vibranium", 20)
+            self.colete_equipado = ("Colete de Anti-Tanque", 20)
+        elif escolha == "4" and self.ouro >= 1500:
+            self.ouro -= 1500
+            self.colete_equipado = ("Colete Adamantium", 70)
+        elif escolha == "5" and self.ouro >= 3000:
+            self.ouro -= 3000
+            self.colete_equipado = ("Colete Vibranium", 150)
+        elif escolha == "6" and self.ouro >= 6666:
+            self.ouro -= 6666
+            self.colete_equipado = ("Colete Infernal", 666)
+        elif escolha == "7" and self.ouro >= 7777:
+            self.ouro -= 7777
+            self.colete_equipado = ("Colete Divino", 777)
         else:
             print("Ouro insuficiente ou opção inválida.")
+            time.sleep(2)
             return
 
         print(f"Colete equipado: {self.colete_equipado[0]} com multiplicador {self.colete_equipado[1]}x de vida.")
