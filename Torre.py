@@ -1,26 +1,74 @@
 import time
 import random
 import os
+import json  # Para manipulação de arquivos JSON
 import threading
 
 class JogoIncremental:
     def __init__(self):
-        self.vida = 500
-        self.forca = 100
-        self.agilidade = 25
-        self.ouro = 5
-        self.pontos_disponiveis = 10
-        self.arma_equipada = None
-        self.bota_equipada = None
-        self.colete_equipado = None
-        self.maior_andar = 0
-        self.vitorias = 0
-        self.derrotas = 0
-        self.recordes_ouro = 0
-        self.andar_atual = 200  # Andar atual, diferente do maior_andar
+        # Verifica se existe um arquivo de progresso salvo
+        self.carregar_progresso()
 
     def limpar_tela(self):
         os.system('cls' if os.name == 'nt' else 'clear')  # Limpa a tela no Termux e Windows
+
+    def salvar_progresso(self):
+        # Cria um dicionário com o status atual do jogador
+        progresso = {
+            'vida': self.vida,
+            'forca': self.forca,
+            'agilidade': self.agilidade,
+            'ouro': self.ouro,
+            'pontos_disponiveis': self.pontos_disponiveis,
+            'arma_equipada': self.arma_equipada,
+            'bota_equipada': self.bota_equipada,
+            'colete_equipado': self.colete_equipado,
+            'maior_andar': self.maior_andar,
+            'vitorias': self.vitorias,
+            'derrotas': self.derrotas,
+            'recordes_ouro': self.recordes_ouro,
+            'andar_atual': self.andar_atual
+        }
+        # Salva o progresso em um arquivo JSON
+        with open("progresso_jogo.json", "w") as arquivo:
+            json.dump(progresso, arquivo)
+        print("Progresso salvo com sucesso!")
+
+    def carregar_progresso(self):
+        # Tenta carregar o progresso salvo, se existir
+        if os.path.exists("progresso_jogo.json"):
+            with open("progresso_jogo.json", "r") as arquivo:
+                progresso = json.load(arquivo)
+                # Restaura o status do jogador a partir do arquivo
+                self.vida = progresso['vida']
+                self.forca = progresso['forca']
+                self.agilidade = progresso['agilidade']
+                self.ouro = progresso['ouro']
+                self.pontos_disponiveis = progresso['pontos_disponiveis']
+                self.arma_equipada = progresso['arma_equipada']
+                self.bota_equipada = progresso['bota_equipada']
+                self.colete_equipado = progresso['colete_equipado']
+                self.maior_andar = progresso['maior_andar']
+                self.vitorias = progresso['vitorias']
+                self.derrotas = progresso['derrotas']
+                self.recordes_ouro = progresso['recordes_ouro']
+                self.andar_atual = progresso['andar_atual']
+            print("Progresso carregado com sucesso!")
+        else:
+            # Se não existir um progresso salvo, inicializa com valores padrões
+            self.vida = 500
+            self.forca = 100
+            self.agilidade = 25
+            self.ouro = 5
+            self.pontos_disponiveis = 10
+            self.arma_equipada = None
+            self.bota_equipada = None
+            self.colete_equipado = None
+            self.maior_andar = 0
+            self.vitorias = 0
+            self.derrotas = 0
+            self.recordes_ouro = 0
+            self.andar_atual = 1
 
     def menu(self):
         while True:
@@ -70,6 +118,8 @@ class JogoIncremental:
             elif opcao == "5":
                 self.mostrar_recordes()
             elif opcao == "6":
+                print("Salvando progresso...")
+                self.salvar_progresso()
                 print("Saindo do jogo...")
                 break
             else:
@@ -454,3 +504,4 @@ def iniciar():
 
 if __name__ == "__main__":
    iniciar()
+
