@@ -32,6 +32,7 @@ class JogoIncremental:
         # Salva o progresso em um arquivo JSON
         with open("progresso_jogo.json", "w") as arquivo:
             json.dump(progresso, arquivo)
+        time.sleep(1)
         print("Progresso salvo com sucesso!")
 
     def carregar_progresso(self):
@@ -53,7 +54,9 @@ class JogoIncremental:
                 self.derrotas = progresso['derrotas']
                 self.recordes_ouro = progresso['recordes_ouro']
                 self.andar_atual = progresso['andar_atual']
-            print("Progresso carregado com sucesso!")
+            self.limpar_tela()
+            print(" \n           CARREGANDO PROGRESSO SALVO...")
+            time.sleep(2)
         else:
             # Se não existir um progresso salvo, inicializa com valores padrões
             self.vida = 500
@@ -118,9 +121,11 @@ class JogoIncremental:
             elif opcao == "5":
                 self.mostrar_recordes()
             elif opcao == "6":
+                self.limpar_tela()
                 print("Salvando progresso...")
                 self.salvar_progresso()
-                print("Saindo do jogo...")
+                print("\n Saindo do jogo...")
+                time.sleep(1)
                 break
             else:
                 print("Opção inválida.")
