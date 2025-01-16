@@ -8,7 +8,7 @@ class JogoIncremental:
         self.vida = 500
         self.forca = 100
         self.agilidade = 25
-        self.ouro = 1000000
+        self.ouro = 5
         self.pontos_disponiveis = 10
         self.arma_equipada = None
         self.bota_equipada = None
@@ -21,6 +21,7 @@ class JogoIncremental:
 
     def limpar_tela(self):
         os.system('cls' if os.name == 'nt' else 'clear')  # Limpa a tela no Termux e Windows
+
     def inventario(self):
         self.limpar_tela()
         print("==== INVENTARIO ====")
@@ -247,7 +248,7 @@ class JogoIncremental:
         letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
         def temporizador(resposta_event):
-            time.sleep(5)  # 5 segundos para responder
+            time.sleep(7)  # 5 segundos para responder
             if not resposta_event.is_set():  # Verifica se a resposta foi dada
                 print("\nTempo esgotado! Você perdeu!")
                 resposta_event.set()  # Marca como respondido para finalizar
@@ -272,12 +273,12 @@ class JogoIncremental:
             thread_tempo.join()  # Aguarda o fim do temporizador
 
             if tentativa != ''.join(sequencia):
-                print("Você errou a sequência! O jogo terminou!")
-                time.sleep(3)
+                print("Você errou a sequência!")
+                time.sleep(1)
                 return False
 
             print(f"Fase {fase} completa! Prepare-se para a próxima fase." if fase < 3 else "Você venceu o boss!")
-            time.sleep(2)
+            time.sleep(1)
 
         return True  # Venceu todas as fases
 
@@ -320,8 +321,8 @@ class JogoIncremental:
                         print("Você perdeu o desafio e será derrotado!")
                         self.derrotas += 1
                         self.andar_atual = 1  # Reseta para o andar 1 após derrota no boss
+                        time.sleep(2)
                         break
-                    time.sleep(2)
             else:
                 print("DERROTA! Você perdeu e voltará para o primeiro andar.")
                 self.derrotas += 1
