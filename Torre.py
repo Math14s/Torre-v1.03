@@ -22,6 +22,60 @@ class JogoIncremental:
     def limpar_tela(self):
         os.system('cls' if os.name == 'nt' else 'clear')  # Limpa a tela no Termux e Windows
 
+    def menu(self):
+        while True:
+            self.limpar_tela()
+            print(f"==== INICIO ====")
+            # Exibe a vida com o multiplicador do colete equipado, se houver
+            if self.colete_equipado:
+                vida_com_buff = self.vida * self.colete_equipado[1]
+                print(f"Vida: {vida_com_buff} (buff do colete: {self.colete_equipado[1]}x)")
+            else:
+                print(f"Vida: {self.vida}")
+
+            # Exibe a força com o multiplicador da arma equipada, se houver
+            if self.arma_equipada:
+                forca_com_buff = self.forca * self.arma_equipada[1]
+                print(f"Força: {forca_com_buff} (buff da arma: {self.arma_equipada[1]}x)")
+            else:
+                print(f"Força: {self.forca}")
+
+            # Exibe a agilidade com o multiplicador da bota equipada, se houver
+            if self.bota_equipada:
+                agilidade_com_buff = self.agilidade * self.bota_equipada[1]
+                print(f"Agilidade: {agilidade_com_buff} (buff da bota: {self.bota_equipada[1]}x)")
+            else:
+                print(f"Agilidade: {self.agilidade}")
+
+            print(f"Ouro: {self.ouro}")
+            print(f"Pontos Disponíveis: {self.pontos_disponiveis}")
+            print("-----Menu-----")
+            print("1. Loja")
+            print("2. Inventário")
+            print("3. Distribuir status")
+            print("4. Torre")
+            print("5. Seus Recordes")
+            print("6. Sair")
+
+            opcao = input("Escolha uma opção: ")
+
+            if opcao == "1":
+                self.loja()
+            elif opcao == "2":
+                self.inventario()
+            elif opcao == "3":
+                self.distribuir_status()
+            elif opcao == "4":
+                self.torre()
+            elif opcao == "5":
+                self.mostrar_recordes()
+            elif opcao == "6":
+                print("Saindo do jogo...")
+                break
+            else:
+                print("Opção inválida.")
+                time.sleep(1)
+
     def minigame_pedra_papel_tesoura(self):
         opcoes = ["pedra", "papel", "tesoura"]
         vitorias_jogador = 0
@@ -84,23 +138,23 @@ class JogoIncremental:
         print("2. Força")
         print("3. Agilidade")
         print("4. Voltar")
-        
+
         escolha = input("Escolha um status para colocar pontos: ")
         if escolha == "4":
             return
-        
+
         pontos = int(input("Quantos pontos? "))
         if pontos > self.pontos_disponiveis:
             print("Você não tem pontos suficientes!")
             return
-        
+
         if escolha == "1":
             self.vida += pontos
         elif escolha == "2":
             self.forca += pontos
         elif escolha == "3":
             self.agilidade += pontos
-        
+
         self.pontos_disponiveis -= pontos
         print(f"Status atualizado! Vida: {self.vida}, Força: {self.forca}, Agilidade: {self.agilidade}")
         time.sleep(1)
@@ -114,7 +168,7 @@ class JogoIncremental:
             print("2. Botas")
             print("3. Coletes")
             print("4. Voltar")
-            
+
             opcao = input("Escolha uma opção: ")
             if opcao == "1":
                 self.loja_armas()
@@ -394,61 +448,9 @@ class JogoIncremental:
             print(f"RECOMPENSAS: {self.ouro} OURO e 3 PONTOS")
             time.sleep(3)
 
-    def menu(self):
-        while True:
-            self.limpar_tela()
-            print(f"==== INICIO ====")
-            # Exibe a vida com o multiplicador do colete equipado, se houver
-            if self.colete_equipado:
-                vida_com_buff = self.vida * self.colete_equipado[1]
-                print(f"Vida: {vida_com_buff} (buff do colete: {self.colete_equipado[1]}x)")
-            else:
-                print(f"Vida: {self.vida}")
-            
-            # Exibe a força com o multiplicador da arma equipada, se houver
-            if self.arma_equipada:
-                forca_com_buff = self.forca * self.arma_equipada[1]
-                print(f"Força: {forca_com_buff} (buff da arma: {self.arma_equipada[1]}x)")
-            else:
-                print(f"Força: {self.forca}")
-            
-            # Exibe a agilidade com o multiplicador da bota equipada, se houver
-            if self.bota_equipada:
-                agilidade_com_buff = self.agilidade * self.bota_equipada[1]
-                print(f"Agilidade: {agilidade_com_buff} (buff da bota: {self.bota_equipada[1]}x)")
-            else:
-                print(f"Agilidade: {self.agilidade}")
-
-            print(f"Ouro: {self.ouro}")
-            print(f"Pontos Disponíveis: {self.pontos_disponiveis}")
-            print("-----Menu-----")
-            print("1. Loja")
-            print("2. Inventário")
-            print("3. Distribuir status")
-            print("4. Torre")
-            print("5. Seus Recordes")
-            print("6. Sair")
-            
-            opcao = input("Escolha uma opção: ")
-            
-            if opcao == "1":
-                self.loja()
-            elif opcao == "2":
-                self.inventario()
-            elif opcao == "3":
-                self.distribuir_status()
-            elif opcao == "4":
-                self.torre()
-            elif opcao == "5":
-                self.mostrar_recordes()
-            elif opcao == "6":
-                print("Saindo do jogo...")
-                break
-            else:
-                print("Opção inválida.")
-                time.sleep(1)
-
-
-if __name__ == "__main__":
+def iniciar():
     jogo = JogoIncremental()
     jogo.menu()
+
+if __name__ == "__main__":
+   iniciar()
