@@ -1,3 +1,4 @@
+import sys
 import time
 import random
 import os
@@ -7,14 +8,31 @@ import threading
 class JogoIncremental:
     def __init__(self):
         # Verifica se existe um arquivo de progresso salvo
+        self.nick = ""
         self.carregar_progresso()
+        if not self.nick:
+           self.limpar_tela()
+           self.nick = input("Digite o nome do seu personagem: ").strip()
+           self.limpar_tela()
 
     def limpar_tela(self):
         os.system('cls' if os.name == 'nt' else 'clear')  # Limpa a tela no Termux e Windows
 
+    def spin(self):
+        spinner = ['|', '/', '-', '\\']  # Caracteres para criar o efeito de rotação
+        try:
+          for _ in range(10):  # Número de iterações
+            for char in spinner:
+                sys.stdout.write(f'\r {char}')  # Atualiza a animação
+                sys.stdout.flush()  # Garante atualização instantânea no terminal
+                time.sleep(0.1)
+        finally:
+          sys.stdout.write('\r' + ' ' * 20 + '\r')  # Limpa a linha ao final
+
     def salvar_progresso(self):
         # Cria um dicionário com o status atual do jogador
         progresso = {
+            'nick': self.nick,
             'vida': self.vida,
             'forca': self.forca,
             'agilidade': self.agilidade,
@@ -41,6 +59,7 @@ class JogoIncremental:
             with open("progresso_jogo.json", "r") as arquivo:
                 progresso = json.load(arquivo)
                 # Restaura o status do jogador a partir do arquivo
+                self.nick = progresso.get('nick', "")
                 self.vida = progresso['vida']
                 self.forca = progresso['forca']
                 self.agilidade = progresso['agilidade']
@@ -55,10 +74,12 @@ class JogoIncremental:
                 self.recordes_ouro = progresso['recordes_ouro']
                 self.andar_atual = progresso['andar_atual']
             self.limpar_tela()
-            print(" \n           CARREGANDO PROGRESSO SALVO...")
+            print(f"    CARREGANDO PROGRESSO SALVO ")
+            self.spin()
             time.sleep(2)
         else:
             # Se não existir um progresso salvo, inicializa com valores padrões
+            self.nick = ""
             self.vida = 500
             self.forca = 100
             self.agilidade = 25
@@ -75,6 +96,9 @@ class JogoIncremental:
 
     def menu(self):
         while True:
+            self.limpar_tela()
+            print(f"SEJA BEM-VINDO(a) á TORRE! {self.nick.upper()}")
+            time.sleep(3)
             self.limpar_tela()
             print(f"==== INICIO ====")
             # Exibe a vida com o multiplicador do colete equipado, se houver
@@ -122,10 +146,11 @@ class JogoIncremental:
                 self.mostrar_recordes()
             elif opcao == "6":
                 self.limpar_tela()
-                print("Salvando progresso...")
+                print(f"Salvando progresso... ")
+                self.spin()
                 self.salvar_progresso()
-                print("\n Saindo do jogo...")
-                time.sleep(1)
+                print(f"\nSaindo do jogo... ")
+                time.sleep(2)
                 break
             else:
                 print("Opção inválida.")
@@ -509,4 +534,3 @@ def iniciar():
 
 if __name__ == "__main__":
    iniciar()
-
