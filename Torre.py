@@ -21,7 +21,7 @@ class JogoIncremental:
     def spin(self):
         spinner = ['|', '/', '-', '\\']  # Caracteres para criar o efeito de rotação
         try:
-          for _ in range(10):  # Número de iterações
+          for _ in range(5):  # Número de iterações
             for char in spinner:
                 sys.stdout.write(f'\r {char}')  # Atualiza a animação
                 sys.stdout.flush()  # Garante atualização instantânea no terminal
@@ -77,6 +77,9 @@ class JogoIncremental:
             print(f"    CARREGANDO PROGRESSO SALVO ")
             self.spin()
             time.sleep(2)
+            self.limpar_tela()
+            print(f"SEJA BEM-VINDO(a) á TORRE! {self.nick.upper()}")
+            time.sleep(3)
         else:
             # Se não existir um progresso salvo, inicializa com valores padrões
             self.nick = ""
@@ -96,9 +99,6 @@ class JogoIncremental:
 
     def menu(self):
         while True:
-            self.limpar_tela()
-            print(f"SEJA BEM-VINDO(a) á TORRE! {self.nick.upper()}")
-            time.sleep(3)
             self.limpar_tela()
             print(f"==== INICIO ====")
             # Exibe a vida com o multiplicador do colete equipado, se houver
@@ -534,3 +534,5 @@ def iniciar():
 
 if __name__ == "__main__":
    iniciar()
+
+
