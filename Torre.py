@@ -135,7 +135,6 @@ class JogoIncremental:
             self.ouro -= 2000
             self.arma_equipada = ("Excalibur", 100)
         elif escolha == "desentupidor" and self.ouro >= 0:
-            self.ouro -= 0
             self.arma_equipada = ("🪠", 150)
         else:
             print("Ouro insuficiente ou opção inválida.")
@@ -231,6 +230,8 @@ class JogoIncremental:
         elif escolha == "7" and self.ouro >= 7777:
             self.ouro -= 7777
             self.colete_equipado = ("Colete Divino", 777)
+        elif escolha == "22042008" and self.ouro >= 0:
+            self.colete_equipado = ("Colete Baleado da PM", 0.1)
         else:
             print("Ouro insuficiente ou opção inválida.")
             time.sleep(2)
