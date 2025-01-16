@@ -484,7 +484,7 @@ class JogoIncremental:
                 vida = self.vida
 
             chance_vitoria = random.random()
-            dificuldade = 0.1 * self.andar_atual * 2
+            dificuldade = 0.2 * self.andar_atual * 2
             chance_de_vencer = (vida / 200) + (agilidade / 100) + (dano / 100) - dificuldade
 
             if self.andar_atual % 100 == 0:  # RAID BOSS a cada 100 andares
