@@ -17,10 +17,52 @@ class JogoIncremental:
         self.vitorias = 0
         self.derrotas = 0
         self.recordes_ouro = 0
-        self.andar_atual = 1  # Andar atual, diferente do maior_andar
+        self.andar_atual = 200  # Andar atual, diferente do maior_andar
 
     def limpar_tela(self):
         os.system('cls' if os.name == 'nt' else 'clear')  # Limpa a tela no Termux e Windows
+
+    def minigame_pedra_papel_tesoura(self):
+        opcoes = ["pedra", "papel", "tesoura"]
+        vitorias_jogador = 0
+        vitorias_boss = 0
+        rodadas = 5
+
+        for rodada in range(rodadas):
+            print(f"\nRodada {rodada + 1} de {rodadas}")
+            escolha_boss = random.choice(opcoes)
+            escolha_jogador = input("Escolha pedra, papel ou tesoura: ").lower()
+
+            if escolha_jogador not in opcoes:
+                print("Escolha inválida! O boss ganhou esta rodada.")
+                vitorias_boss += 1
+                continue
+
+            print(f"Você escolheu {escolha_jogador}, o boss escolheu {escolha_boss}.")
+
+            if escolha_jogador == escolha_boss:
+                print("Empate!")
+            elif (
+                (escolha_jogador == "pedra" and escolha_boss == "tesoura") or
+                (escolha_jogador == "tesoura" and escolha_boss == "papel") or
+                (escolha_jogador == "papel" and escolha_boss == "pedra")
+            ):
+                print("Você ganhou esta rodada!")
+                vitorias_jogador += 1
+            else:
+                print("O boss ganhou esta rodada!")
+                vitorias_boss += 1
+
+            time.sleep(1)
+
+        print("\nResultado Final:")
+        print(f"Você: {vitorias_jogador} | Boss: {vitorias_boss}")
+        if vitorias_jogador > vitorias_boss:
+            print("Você venceu o RAID BOSS!")
+            return True
+        else:
+            print("Você perdeu para o RAID BOSS!")
+            return False
 
     def inventario(self):
         self.limpar_tela()
@@ -310,6 +352,21 @@ class JogoIncremental:
             chance_vitoria = random.random()
             dificuldade = 0.1 * self.andar_atual * 2
             chance_de_vencer = (vida / 200) + (agilidade / 100) + (dano / 100) - dificuldade
+
+            if self.andar_atual % 100 == 0:  # RAID BOSS a cada 100 andares
+                print("RAID BOSS ENCONTRADO!")
+                if not self.minigame_pedra_papel_tesoura():
+                    print("Voltando para o primeiro andar.")
+                    self.derrotas += 1
+                    self.andar_atual = 1
+                    time.sleep(3)
+                    break
+                else:
+                    self.ouro += self.andar_atual * 1.5  # Grande recompensa por vencer o RAID BOSS
+                    self.pontos_disponiveis += 10
+                    self.andar_atual += 1
+                    time.sleep(3)
+                    continue
 
             if chance_vitoria < chance_de_vencer:
                 print("VITÓRIA! SUBINDO UM ANDAR")
