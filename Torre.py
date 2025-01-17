@@ -4,6 +4,13 @@ import random
 import os
 import json  # Para manipulação de arquivos JSON
 import threading
+import requests
+import subprocess
+
+ARQUIVO_JSON = "progresso_jogo.json"
+
+# URL do endpoint do site da leaderboard
+URL_LEADERBOARD = "http://rankandar.ddns.net:5000/atualizar"
 
 class JogoIncremental:
     def __init__(self):
@@ -16,7 +23,43 @@ class JogoIncremental:
            self.limpar_tela()
 
     def limpar_tela(self):
-        os.system('cls' if os.name == 'nt' else 'clear')  # Limpa a tela no Termux e Windows
+        os.system('cls' if os.name == 'nt' else 'clear')  # Limpa a tela no Termux e Windows   
+# Caminho do arquivo JSON
+
+    def abrir(self):
+        try:
+            url = "http://rankandar.ddns.net:5000/"
+            subprocess.run(["termux-open", url])
+            print("Abrindo o leaderboard no navegador...")
+            time.sleep(2)
+        except Exception as e:
+            print(f"Erro ao abrir o leaderboard: {e}")
+            time.sleep(2)
+
+    def atualizar_leaderboard(self):
+         try:
+        # Lendo o arquivo JSON
+            with open(ARQUIVO_JSON, 'r', encoding='utf-8') as f:
+                progresso = json.load(f)
+
+        # Extraindo as informações necessárias
+            nick = progresso.get("nick")
+            maior_andar = progresso.get("maior_andar", 0)
+
+            if not nick or maior_andar <= 0:
+                print("Dados inválidos no arquivo JSON.")
+                return
+
+        # Enviando os dados para o site
+            payload = {"nick": nick, "maior_andar": maior_andar}
+            response = requests.post(URL_LEADERBOARD, json=payload)
+
+            if response.status_code == 200:
+                print("Leaderboard atualizada com sucesso!")
+            else:
+                print(f"Falha ao atualizar leaderboard: {response.text}")
+         except Exception as e:
+            print(f"Erro ao processar o arquivo JSON: {e}")
 
     def spin(self):
         spinner = ['|', '/', '-', '\\']  # Caracteres para criar o efeito de rotação
@@ -130,7 +173,8 @@ class JogoIncremental:
             print("3. Distribuir status")
             print("4. Torre")
             print("5. Seus Recordes")
-            print("6. Sair")
+            print("6. Abrir Rank Global")
+            print("7. Sair")
 
             opcao = input("Escolha uma opção: ")
 
@@ -145,10 +189,14 @@ class JogoIncremental:
             elif opcao == "5":
                 self.mostrar_recordes()
             elif opcao == "6":
+                self.atualizar_leaderboard()
+                self.abrir()
+            elif opcao == "7":
                 self.limpar_tela()
                 print(f"Salvando progresso... ")
                 self.spin()
                 self.salvar_progresso()
+                self.atualizar_leaderboard()
                 print(f"\nSaindo do jogo... ")
                 time.sleep(2)
                 break
@@ -484,7 +532,7 @@ class JogoIncremental:
                 vida = self.vida
 
             chance_vitoria = random.random()
-            dificuldade = 0.2 * self.andar_atual * 2
+            dificuldade = 0.1 * self.andar_atual * 2
             chance_de_vencer = (vida / 200) + (agilidade / 100) + (dano / 100) - dificuldade
 
             if self.andar_atual % 100 == 0:  # RAID BOSS a cada 100 andares
@@ -534,5 +582,3 @@ def iniciar():
 
 if __name__ == "__main__":
    iniciar()
-
-
