@@ -9,6 +9,9 @@ import subprocess
 
 ARQUIVO_JSON = "progresso_jogo.json"
 
+# URL do leaderboard
+url_leaderboard = "http://rankandar.ddns.net:5000/"
+
 # URL do endpoint do site da leaderboard
 URL_LEADERBOARD = "http://rankandar.ddns.net:5000/atualizar"
 
@@ -24,11 +27,10 @@ class JogoIncremental:
 
     def limpar_tela(self):
         os.system('cls' if os.name == 'nt' else 'clear')  # Limpa a tela no Termux e Windows   
-# Caminho do arquivo JSON
-
+        
     def abrir(self):
         try:
-            url = "http://rankandar.ddns.net:5000/"
+            url = "http://170.83.227.128:5000/"
             subprocess.run(["termux-open", url])
             print("Abrindo o leaderboard no navegador...")
             time.sleep(2)
@@ -41,13 +43,13 @@ class JogoIncremental:
         # Lendo o arquivo JSON
             with open(ARQUIVO_JSON, 'r', encoding='utf-8') as f:
                 progresso = json.load(f)
-
+        
         # Extraindo as informações necessárias
             nick = progresso.get("nick")
             maior_andar = progresso.get("maior_andar", 0)
 
             if not nick or maior_andar <= 0:
-                print("Dados inválidos no arquivo JSON.")
+                print("Dados inválidos no arquivo JSON. Ou Progresso ainda não Salvo")
                 return
 
         # Enviando os dados para o site
@@ -173,7 +175,7 @@ class JogoIncremental:
             print("3. Distribuir status")
             print("4. Torre")
             print("5. Seus Recordes")
-            print("6. Abrir Rank Global")
+            print("6. Ver Rank Global")
             print("7. Sair")
 
             opcao = input("Escolha uma opção: ")
@@ -189,8 +191,11 @@ class JogoIncremental:
             elif opcao == "5":
                 self.mostrar_recordes()
             elif opcao == "6":
+            	self.atualizar_leaderboard()
+            	self.abrir()
+            elif opcao == "0":
+                self.salvar_progresso()
                 self.atualizar_leaderboard()
-                self.abrir()
             elif opcao == "7":
                 self.limpar_tela()
                 print(f"Salvando progresso... ")
@@ -291,6 +296,7 @@ class JogoIncremental:
         while True:
             self.limpar_tela()
             print("==== LOJA ====")
+            print(f"Ouro: {self.ouro}")
             print("Escolha uma categoria:")
             print("1. Armas")
             print("2. Botas")
@@ -321,6 +327,7 @@ class JogoIncremental:
     def loja_armas(self):
         self.limpar_tela()
         print("==== LOJA DE ARMAS ====")
+        print(f"Ouro: {self.ouro}")
         print("1. 10 Ouro - Espada de madeira (1.5x força)")
         print("2. 50 Ouro - Espada de pedra (3x força)")
         print("3. 200 Ouro - Espada de ferro (5x força)")
@@ -371,6 +378,7 @@ class JogoIncremental:
     def loja_botas(self):
         self.limpar_tela()
         print("==== LOJA DE BOTAS ====")
+        print(f"Ouro: {self.ouro}")
         print("1. 70 Ouro - Bota Ágil (2x Agi)")
         print("2. 150 Ouro - Bota Booster (4x Agi)")
         print("3. 300 Ouro - Bota Sonica (10x Agi)")
@@ -419,6 +427,7 @@ class JogoIncremental:
     def loja_coletes(self):
         self.limpar_tela()
         print("==== LOJA DE COLETES ====")
+        print(f"Ouro: {self.ouro}")
         print("1. 100 Ouro - Colete Padrão (3x Vida)")
         print("2. 300 Ouro - Colete Kevlar (6x Vida)")
         print("3. 800 Ouro - Colete Anti-Tanque (20x Vida)")
@@ -478,7 +487,7 @@ class JogoIncremental:
         def temporizador(resposta_event):
             time.sleep(7)  # 5 segundos para responder
             if not resposta_event.is_set():  # Verifica se a resposta foi dada
-                print("\nTempo esgotado! Você perdeu!")
+                print("\nTempo esgotado! Você perdeu!\n...")
                 resposta_event.set()  # Marca como respondido para finalizar
                 return False
 
@@ -502,10 +511,9 @@ class JogoIncremental:
 
             if tentativa != ''.join(sequencia):
                 print("Você errou a sequência!")
-                time.sleep(1)
                 return False
 
-            print(f"Fase {fase} completa! Prepare-se para a próxima fase." if fase < 3 else "Você venceu o boss!")
+            print(f"Fase {fase} completa! Vamos para a próxima fase." if fase < 3 else "Você venceu o boss!")
             time.sleep(1)
 
         return True  # Venceu todas as fases
@@ -532,7 +540,7 @@ class JogoIncremental:
                 vida = self.vida
 
             chance_vitoria = random.random()
-            dificuldade = 0.1 * self.andar_atual * 2
+            dificuldade = 0.2 * self.andar_atual * 2
             chance_de_vencer = (vida / 200) + (agilidade / 100) + (dano / 100) - dificuldade
 
             if self.andar_atual % 100 == 0:  # RAID BOSS a cada 100 andares
@@ -561,7 +569,7 @@ class JogoIncremental:
                 if self.andar_atual % 10 == 0:
                     print("BOSS ENCONTRADO!")
                     if not self.minigame_memoria():  # Se o minigame for perdido
-                        print("Você perdeu o desafio e será derrotado!")
+                        print("Derrota")
                         self.derrotas += 1
                         self.andar_atual = 1  # Reseta para o andar 1 após derrota no boss
                         time.sleep(2)
