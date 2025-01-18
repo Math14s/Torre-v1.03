@@ -6,6 +6,7 @@ import json  # Para manipulação de arquivos JSON
 import threading
 import requests
 import subprocess
+import platform
 
 ARQUIVO_JSON = "progresso_jogo.json"
 
@@ -26,8 +27,8 @@ class JogoIncremental:
            self.limpar_tela()
 
     def limpar_tela(self):
-        os.system('cls' if os.name == 'nt' else 'clear')  # Limpa a tela no Termux e Windows   
-        
+        os.system('cls' if os.name == 'nt' else 'clear')  # Limpa a tela no Termux e Windows
+
     def abrir(self):
         try:
             url = "http://170.83.227.128:5000/"
@@ -43,13 +44,13 @@ class JogoIncremental:
         # Lendo o arquivo JSON
             with open(ARQUIVO_JSON, 'r', encoding='utf-8') as f:
                 progresso = json.load(f)
-        
+
         # Extraindo as informações necessárias
             nick = progresso.get("nick")
             maior_andar = progresso.get("maior_andar", 0)
 
             if not nick or maior_andar <= 0:
-                print("Dados inválidos no arquivo JSON. Ou Progresso ainda não Salvo")
+                print("Dados inválidos no arquivo JSON.")
                 return
 
         # Enviando os dados para o site
@@ -487,7 +488,7 @@ class JogoIncremental:
         def temporizador(resposta_event):
             time.sleep(7)  # 5 segundos para responder
             if not resposta_event.is_set():  # Verifica se a resposta foi dada
-                print("\nTempo esgotado! Você perdeu!\n...")
+                print("\nTempo esgotado! Você perdeu!")
                 resposta_event.set()  # Marca como respondido para finalizar
                 return False
 
@@ -495,7 +496,18 @@ class JogoIncremental:
             # Gerar uma sequência diferente para cada fase
             tamanho_sequencia = 5 + fase  # Aumenta o tamanho a cada fase
             sequencia = random.choices(letras, k=tamanho_sequencia)
-
+            time.sleep(2)
+            self.limpar_tela()
+            time.sleep(2)
+            print("3")
+            time.sleep(1)
+            print("2")
+            time.sleep(1)
+            print("1")
+            time.sleep(1)
+            print("Começou!")
+            time.sleep(1)
+            self.limpar_tela()
             print(f"\nFase {fase}: Memorize a sequência!")
             self.mostrar_sequencia(sequencia)
 
@@ -511,9 +523,10 @@ class JogoIncremental:
 
             if tentativa != ''.join(sequencia):
                 print("Você errou a sequência!")
+                time.sleep(1)
                 return False
 
-            print(f"Fase {fase} completa! Vamos para a próxima fase." if fase < 3 else "Você venceu o boss!")
+            print(f"Fase {fase} completa! Prepare-se para a próxima fase." if fase < 3 else "Você venceu o boss!")
             time.sleep(1)
 
         return True  # Venceu todas as fases
@@ -540,11 +553,14 @@ class JogoIncremental:
                 vida = self.vida
 
             chance_vitoria = random.random()
-            dificuldade = 0.2 * self.andar_atual * 2
+            dificuldade = 0.1 * self.andar_atual * 2
             chance_de_vencer = (vida / 200) + (agilidade / 100) + (dano / 100) - dificuldade
 
             if self.andar_atual % 100 == 0:  # RAID BOSS a cada 100 andares
-                print("RAID BOSS ENCONTRADO!")
+                self.limpar_tela()
+                print("             RAID BOSS ENCONTRADO!")
+                print("Para derrotar o RAID BOSS você precisa ganhar do BOSS em 5 turnos de PEDRA PAPEL E TESOURA")
+                input("\n\nPressione ENTER para iniciar o combate...")
                 if not self.minigame_pedra_papel_tesoura():
                     print("Voltando para o primeiro andar.")
                     self.derrotas += 1
@@ -567,9 +583,11 @@ class JogoIncremental:
                 self.andar_atual += 1
 
                 if self.andar_atual % 10 == 0:
-                    print("BOSS ENCONTRADO!")
+                    self.limpar_tela()
+                    print("                 BOSS ENCONTRADO!")
+                    input("\n Você vai jogar um jogo da memoria para vencer o boss \n\n Pressione Enter para enfrentar o BOSS...")
                     if not self.minigame_memoria():  # Se o minigame for perdido
-                        print("Derrota")
+                        print("Você perdeu o desafio e será derrotado!")
                         self.derrotas += 1
                         self.andar_atual = 1  # Reseta para o andar 1 após derrota no boss
                         time.sleep(2)
@@ -590,3 +608,5 @@ def iniciar():
 
 if __name__ == "__main__":
    iniciar()
+
+
