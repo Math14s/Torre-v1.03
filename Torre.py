@@ -265,22 +265,39 @@ class JogoIncremental:
         input("...")
 
     def distribuir_status(self):
-        self.limpar_tela()
-        print(f"==== DISTRIBUIR ====")
-        print(f"PONTOS DISPONIVEIS: {self.pontos_disponiveis}")
-        print("1. Vida")
-        print("2. Força")
-        print("3. Agilidade")
-        print("4. Voltar")
+        while True:
+            self.limpar_tela()
+            print(f"==== DISTRIBUIR ====")
+            print(f"PONTOS DISPONIVEIS: {self.pontos_disponiveis}")
+            print("1. Vida")
+            print("2. Força")
+            print("3. Agilidade")
+            print("4. Voltar")
 
-        escolha = input("Escolha um status para colocar pontos: ")
-        if escolha == "4":
-            return
+            escolha = input("Escolha um status para colocar pontos: ")
+            if escolha == "4":
+                break
 
-        pontos = int(input("Quantos pontos? "))
-        if pontos > self.pontos_disponiveis:
-            print("Você não tem pontos suficientes!")
-            return
+            if escolha not in ["1", "2", "3"]:
+                print("Opção inválida!")
+                time.sleep(1)
+                continue
+
+            try:
+                pontos = int(input("Quantos pontos? "))
+                if pontos <= 0:
+                    print("Você deve adicionar ao menos 1 ponto!")
+                    time.sleep(1)
+                    continue
+            except ValueError:
+              print("Entrada inválida! Digite um número inteiro.")
+              time.sleep(1)
+              continue
+
+            if pontos > self.pontos_disponiveis:
+                print("Você não tem pontos suficientes!")
+                time.sleep(1)
+                continue
 
         if escolha == "1":
             self.vida += pontos
@@ -290,6 +307,7 @@ class JogoIncremental:
             self.agilidade += pontos
 
         self.pontos_disponiveis -= pontos
+        print(f"Você adicionou {pontos} ponto(s)!")
         print(f"Status atualizado! Vida: {self.vida}, Força: {self.forca}, Agilidade: {self.agilidade}")
         time.sleep(1)
 
